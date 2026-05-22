@@ -1,0 +1,619 @@
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                                    PACKAGE STRUCTURE                                    │
+├─────────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                         │
+│  ┌─────────────────────┐  ┌─────────────────────┐  ┌─────────────────────┐              │
+│  │   cafeteria.person  │  │   cafeteria.menu    │  │   cafeteria.order   │              │
+│  ├─────────────────────┤  ├─────────────────────┤  ├─────────────────────┤              │
+│  │ • Person            │  │ • MenuItem          │  │ • Order             │              │
+│  │ • Customer          │  │ • FoodItem          │  │ • OrderItem         │              │
+│  │ • Cashier           │  │ • DrinkItem         │  │ • Payment           │              │
+│  │ • Admin             │  │ • Category          │  │                     │              │
+│  └─────────────────────┘  └─────────────────────┘  └─────────────────────┘              │
+│                                                                                         │
+│  ┌─────────────────────┐  ┌─────────────────────┐                                       │
+│  │  cafeteria.database │  │  cafeteria.utils    │                                       │
+│  ├─────────────────────┤  ├─────────────────────┤                                       │
+│  │ • DatabaseManager   │  │ • PriceFormatter    │                                       │
+│  │                     │  │ • ValidationHelper  │                                       │
+│  └─────────────────────┘  └─────────────────────┘                                       │
+│                                                                                         │
+└─────────────────────────────────────────────────────────────────────────────────────────┘
+
+=================================================================================================================
+                                      PERSON HIERARCHY
+=================================================================================================================
+
+                                           +----------------------+
+                                           |        Person        |
+                                           +----------------------+
+                                           | - fullName: String   |
+                                           | - phone: String      |
+                                           | - email: String      |
+                                           +----------------------+
+                                           | + Person()           |
+                                           | + Person(fullName,   |
+                                           |   phone, email)      |
+                                           | + getFullName()      |
+                                           | + setFullName()      |
+                                           | + getPhone()         |
+                                           | + setPhone()         |
+                                           | + getEmail()         |
+                                           | + setEmail()         |
+                                           | + displayInfo()      |
+                                           +----------------------+
+                                                      ^
+                           ___________________________|____________________________
+                          |                           |                            |
+                          |                           |                            |
+          +----------------------------+  +----------------------------+  +----------------------------+
+          |         Customer           |  |          Cashier           |  |           Admin            |
+          +----------------------------+  +----------------------------+  +----------------------------+
+          | - customerId: int          |  | - cashierId: int           |  | - adminId: int             |
+          | - tableNumber: int         |  | - shift: String            |  | - username: String         |
+          | - loyaltyPoints: double    |  | - department: String       |  | - password: String         |
+          | - totalSpent: double       |  | - employeeCode: String     |  | - role: String             |
+          +----------------------------+  +----------------------------+  +----------------------------+
+          | + Customer()               |  | + Cashier()                |  | + Admin()                  |
+          | + Customer(...)            |  | + Cashier(...)             |  | + Admin(...)               |
+          | + selectItem()             |  | + generateBill()           |  | + addMenuItem()            |
+          | + placeOrder()             |  | + printReceipt()           |  | + updateMenuItem()         |
+          | + addLoyaltyPoints()       |  | + processPayment()         |  | + deleteMenuItem()         |
+          | + redeemLoyaltyPoints()    |  | + validateOrder()          |  | + addCategory()            |
+          | + displayInfo()            |  | + displayInfo()            |  | + updateCategory()         |
+          +----------------------------+  +----------------------------+  | + deleteCategory()         |
+                                                                         | + generateSalesReport()    |
+                                                                         | + displayInfo()            |
+                                                                         +----------------------------+
+
+=================================================================================================================
+                                      MENU ITEM HIERARCHY
+=================================================================================================================
+
+                                           +----------------------+
+                                           |      MenuItem        |
+                                           +----------------------+
+                                           | - itemId: int        |
+                                           | - itemName: String   |
+                                           | - description: String|
+                                           | - price: double      |
+                                           | - imagePath: String  |
+                                           | - calories: int      |
+                                           | - preparationTime: int|
+                                           | - isAvailable: boolean|
+                                           | - rating: double     |
+                                           +----------------------+
+                                           | + MenuItem()         |
+                                           | + MenuItem(...)      |
+                                           | + displayItem()      |
+                                           | + updatePrice()      |
+                                           | + updateAvailability()|
+                                           | + getItemId()        |
+                                           | + getItemName()      |
+                                           | + getPrice()         |
+                                           | + setPrice()         |
+                                           | + isAvailable()      |
+                                           | + setAvailable()     |
+                                           | + displayInfo()      |
+                                           +----------------------+
+                                                      ^
+                           ___________________________|____________________________
+                          |                                                       |                            
+                          |                                                       |                            
+          +----------------------------+                             +----------------------------+  
+          |         FoodItem           |                             |        DrinkItem           | 
+          +----------------------------+                             +----------------------------+  
+          | - foodType: String         |                             | - size: String             |  
+          | - spicyLevel: String       |                             | - temperature: String      |  
+          | - isVegetarian: boolean    |                             | - brand: String            |  
+          | - cuisineType: String      |                             | - isCarbonated: boolean    | 
+          | - preparationMethod: String|                             | - caffeineContent: int     |  
+          +----------------------------+                             +----------------------------+  
+          | + FoodItem()               |                             | + DrinkItem()              |  
+          | + FoodItem(...)            |                             | + DrinkItem(...)           |  
+          | + displayFood()            |                             | + displayDrink()           |  
+          | + getNutritionInfo()       |                             | + getServingSuggestions()  |  
+          +----------------------------+                             +----------------------------+  
+
+=================================================================================================================
+                                      CATEGORY CLASS
+=================================================================================================================
+
+          +----------------------------+
+          |         Category           |
+          +----------------------------+
+          | - categoryId: int          |
+          | - categoryName: String     |
+          | - description: String      |
+          | - itemCount: int           |
+          | - items: List<MenuItem>    |
+          | - imagePath: String        |
+          | - isActive: boolean        |
+          +----------------------------+
+          | + Category()               |
+          | + Category(...)            |
+          | + displayCategory()        |
+          | + updateCategory()         |
+          | + addItem()                |
+          | + removeItem()             |
+          | + getItems()               |
+          | + getItemCount()           |
+          | + searchItemByName()       |
+          | + getItemsByPriceRange()   |
+          +----------------------------+
+
+=================================================================================================================
+                                      ORDER HIERARCHY
+=================================================================================================================
+
+          +----------------------------+
+          |          Order             |
+          +----------------------------+
+          | - orderId: int             |
+          | - orderDate: String        |
+          | - totalPrice: double       |
+          | - status: String           |
+          | - customer: Customer       |
+          | - cashier: Cashier         |
+          | - orderItems: List<OrderItem>|
+          | - payment: Payment         |
+          | - tax: double              |
+          | - discount: double         |
+          | - serviceCharge: double    |
+          +----------------------------+
+          | + Order()                  |
+          | + Order(...)               |
+          | + calculateTotal()         |
+          | + calculateTax()           |
+          | + applyDiscount()          |
+          | + addOrderItem()           |
+          | + removeOrderItem()        |
+          | + updateQuantity()         |
+          | + displayOrder()           |
+          | + getOrderSummary()        |
+          | + getInvoice()             |
+          | + getStatus()              |
+          | + setStatus()              |
+          +----------------------------+
+                      ^
+                      |
+                      | contains
+                      |
+          +----------------------------+
+          |        OrderItem           |
+          +----------------------------+
+          | - quantity: int            |
+          | - subtotal: double         |
+          | - menuItem: MenuItem       |
+          | - specialInstructions: String|
+          | - discountPerItem: double  |
+          +----------------------------+
+          | + OrderItem()              |
+          | + OrderItem(...)           |
+          | + calculateSubtotal()      |
+          | + applyItemDiscount()      |
+          | + getFormattedDetails()    |
+          +----------------------------+
+
+=================================================================================================================
+                                      PAYMENT CLASS
+=================================================================================================================
+
+          +----------------------------+
+          |         Payment            |
+          +----------------------------+
+          | - paymentId: int           |
+          | - paymentType: String      |
+          | - amount: double           |
+          | - paymentDate: String      |
+          | - isCompleted: boolean     |
+          | - transactionId: String    |
+          | - cardNumber: String       |
+          | - tipAmount: double        |
+          +----------------------------+
+          | + Payment()                |
+          | + Payment(...)             |
+          | + makePayment()            |
+          | + processCardPayment()     |
+          | + processCashPayment()     |
+          | + processMobilePayment()   |
+          | + printReceipt()           |
+          | + generateTransactionId()  |
+          | + refund()                 |
+          | + getPaymentStatus()       |
+          +----------------------------+
+
+=================================================================================================================
+                                      INTERFACE DESIGN
+=================================================================================================================
+
+          +----------------------+           +----------------------+
+          |     Manageable       |           |    Discountable      |
+          +----------------------+           +----------------------+
+          | + add()              |           | + applyDiscount()    |
+          | + update()           |           | + getDiscountedPrice()|
+          | + delete()           |           | + validateCoupon()   |
+          | + search()           |           +----------------------+
+          +----------------------+                        ^
+                      ^                                   |
+                      | implements                        | implements
+                      |                                   |
+          +----------------------------+       +----------------------------+
+          |           Admin            |       |         OrderItem          |
+          +----------------------------+       +----------------------------+
+
+          +----------------------+           +----------------------+
+          |     Reportable       |           |     Searchable       |
+          +----------------------+           +----------------------+
+          | + generateReport()   |           | + searchByName()     |
+          | + exportToPDF()      |           | + searchByCategory() |
+          | + getStatistics()    |           | + searchByPrice()    |
+          +----------------------+           +----------------------+
+                      ^                                   ^
+                      | implements                        | implements
+                      |                                   |
+          +----------------------------+       +----------------------------+
+          |           Admin            |       |         Catalog           |
+          +----------------------------+       +----------------------------+
+
+=================================================================================================================
+                                      CATALOG CLASS
+=================================================================================================================
+
+          +----------------------------+
+          |         Catalog            |
+          +----------------------------+
+          | - catalogId: int           |
+          | - name: String             |
+          | - books: List<Book>        |
+          | - authors: List<Author>    |
+          | - totalItems: int          |
+          +----------------------------+
+          | + Catalog()                |
+          | + Catalog(...)             |
+          | + addBook()                |
+          | + removeBook()             |
+          | + searchBook()             |
+          | + addAuthor()              |
+          | + removeAuthor()           |
+          | + displayCatalog()         |
+          | + getTotalItems()          |
+          | + sortByPrice()            |
+          | + filterByCategory()       |
+          +----------------------------+
+
+=================================================================================================================
+                                      DATABASE MANAGER
+=================================================================================================================
+
+          +----------------------------+
+          |     DatabaseManager        |
+          +----------------------------+
+          | - instance: DatabaseManager|
+          | - menuItems: Map<Integer,  |
+          |   MenuItem>                |
+          | - categories: Map<Integer, |
+          |   Category>                |
+          | - orders: Map<Integer,     |
+          |   Order>                   |
+          | - customers: Map<Integer,  |
+          |   Customer>                |
+          | - payments: List<Payment>  |
+          | - connection: Connection   |
+          +----------------------------+
+          | - DatabaseManager()        |
+          | + getInstance()            |
+          | + initializeDatabase()     |
+          | + connect()                |
+          | + disconnect()             |
+          | + addMenuItem()            |
+          | + getMenuItem()            |
+          | + updateMenuItem()         |
+          | + deleteMenuItem()         |
+          | + getAllMenuItems()        |
+          | + addCategory()            |
+          | + getCategory()            |
+          | + updateCategory()         |
+          | + deleteCategory()         |
+          | + saveOrder()              |
+          | + getOrder()               |
+          | + getAllOrders()           |
+          | + savePayment()            |
+          | + getPayment()             |
+          | + addCustomer()            |
+          | + getCustomer()            |
+          | + updateCustomer()         |
+          | + deleteCustomer()         |
+          | + getSalesReport()         |
+          | + getPopularItems()        |
+          | + backupDatabase()         |
+          | + restoreDatabase()        |
+          +----------------------------+
+
+=================================================================================================================
+                                    INTERFACE REALIZATION
+=================================================================================================================
+
+                         +----------------------+
+                         |      Manageable      |
+                         +----------------------+
+                         | + add()              |
+                         | + update()           |
+                         | + delete()           |
+                         | + search()           |
+                         +----------------------+
+                                    ^
+                                    |
+                              implements
+                                    |
+                              +-------------+
+                              |    Admin    |
+                              +-------------+
+
+
+                         +----------------------+
+                         |     Discountable     |
+                         +----------------------+
+                         | + applyDiscount()    |
+                         | + getDiscountedPrice()|
+                         | + validateCoupon()   |
+                         +----------------------+
+                                    ^
+                                    |
+                              implements
+                                    |
+                              +-------------+
+                              |  OrderItem  |
+                              +-------------+
+
+
+                         +----------------------+
+                         |      Reportable      |
+                         +----------------------+
+                         | + generateReport()   |
+                         | + exportToPDF()      |
+                         | + getStatistics()    |
+                         +----------------------+
+                                    ^
+                                    |
+                              implements
+                                    |
+                              +-------------+
+                              |    Admin    |
+                              +-------------+
+
+=================================================================================================================
+                                    RELATIONSHIPS DIAGRAM
+=================================================================================================================
+
+                                1                    writes                    *
+                    +---------------------+                         +---------------------+
+                    |       Author        |                         |        Book         |
+                    +---------------------+                         +---------------------+
+                    |                     │                         |                     |
+                    |                     └─────────────────────────│                     |
+                    │                                               │                     |
+                    +---------------------+                         +---------------------+
+                              │                                               │
+                              │                                               │ contains
+                              │                                               │
+                              │                                               ▼
+                              │                                     +---------------------+
+                              │                                     |    BookContent      |
+                              │                                     +---------------------+
+                              │                                               │
+                              │                                               │
+                              │                                      ┌───────┴───────┐
+                              │                                      │               │
+                              │                                      ▼               ▼
+                              │                            +--------------+  +--------------+
+                              │                            |  PdfContent  |  |  PptContent  |
+                              │                            +--------------+  +--------------+
+                              │
+                              │                1                    has                    1
+                              └─────────────────────────┐  +---------------------+
+                                                        └──│     Membership       │
+                                                           +---------------------+
+                                                                    │
+                                                                    │ belongs to
+                                                                    │
+                                                                    ▼
+                                                           +---------------------+
+                                                           |       Viewer        │
+                                                           +---------------------+
+
+=================================================================================================================
+                                    COMPLETE HIERARCHICAL INHERITANCE
+=================================================================================================================
+
+                         +----------------------+
+                         |        Person        |
+                         +----------------------+
+                                    |
+                    _______________________________________
+                   |                  |                   |
+                   |                  |                   |
+           +---------------+   +---------------+   +---------------+
+           |    Author     |   |    Viewer     |   |     Admin     |
+           +---------------+   +---------------+   +---------------+
+
+                         +----------------------+
+                         |      MenuItem        |
+                         +----------------------+
+                                    |
+                    _______________________________________
+                   |                  |                   |
+                   |                  |                   |
+           +---------------+   +---------------+   +---------------+
+           |   FoodItem    |   |  DrinkItem    |   |  DessertItem  |
+           +---------------+   +---------------+   +---------------+
+
+                         +----------------------+
+                         |     BookContent      |
+                         +----------------------+
+                                    |
+                    _______________________________________
+                   |                  |                   |
+                   |                  |                   |
+           +---------------+   +---------------+   +---------------+
+           |  PdfContent   |   |  PptContent   |   | AudioContent  |
+           +---------------+   +---------------+   +---------------+
+
+=================================================================================================================
+                                    UTILITY CLASSES
+=================================================================================================================
+
+          +----------------------------+  +----------------------------+
+          |      PriceFormatter        |  |     ValidationHelper       |
+          +----------------------------+  +----------------------------+
+          | + formatPrice(price)       |  | + isValidEmail(email)      |
+          | + formatCurrency(amount)   |  | + isValidPhone(phone)      |
+          | + formatWithTax(price)     |  | + isValidCardNumber(num)   |
+          | + getChangeDue(paid, total)|  | + isValidQuantity(qty)     |
+          +----------------------------+  | + validateOrder(order)     |
+                                           +----------------------------+
+
+          +----------------------------+  +----------------------------+
+          |      ReceiptPrinter        |  |       NotificationService   |
+          +----------------------------+  +----------------------------+
+          | + printReceipt(order)      |  | + sendEmail(message)        |
+          | + printInvoice(order)      |  | + sendSMS(message)          |
+          | + printBill(order)         |  | + sendPushNotification()    |
+          | + exportToPDF(order)       |  | + printToTerminal(message)  |
+          +----------------------------+  +----------------------------+
+
+=================================================================================================================
+                                    BUILT-IN PACKAGES 
+=================================================================================================================
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                        java.lang.*                              │
+          │  • String                                                        │
+          │  • Integer, Double, Boolean                                     │
+          │  • System, Math                                                 │
+          │  • Exception, RuntimeException                                  │
+          └─────────────────────────────────────────────────────────────────┘
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                        java.util.*                               │
+          │  • ArrayList, LinkedList                                        │
+          │  • HashMap, TreeMap                                             │
+          │  • Date, Calendar                                               │
+          │  • Scanner                                                      │
+          │  • UUID, Random                                                 │
+          └─────────────────────────────────────────────────────────────────┘
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                      javax.swing.*                              │
+          │  • JFrame, JPanel, JDialog                                      │
+          │  • JButton, JLabel, JTextField                                  │
+          │  • JTextArea, JScrollPane                                       │
+          │  • JTable, JTree                                                │
+          │  • JMenuBar, JMenu, JMenuItem                                   │
+          │  • JOptionPane                                                  │
+          └─────────────────────────────────────────────────────────────────┘
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                      java.sql.*                                 │
+          │  • Connection, Statement, PreparedStatement                     │
+          │  • ResultSet, DriverManager                                     │
+          │  • SQLException                                                 │
+          └─────────────────────────────────────────────────────────────────┘
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                      java.awt.*                                 │
+          │  • Color, Font, BorderLayout, GridLayout                        │
+          │  • FlowLayout, GridBagLayout                                    │
+          │  • Dimension, Insets                                            │
+          │  • ActionEvent, ActionListener                                  │
+          └─────────────────────────────────────────────────────────────────┘
+
+=================================================================================================================
+                                    USER-DEFINED PACKAGES
+=================================================================================================================
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                      cafeteria.person                           │
+          │  • Person (Abstract)                                            │
+          │  • Customer                                                     │
+          │  • Cashier                                                      │
+          │  • Admin                                                        │
+          └─────────────────────────────────────────────────────────────────┘
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                      cafeteria.menu                             │
+          │  • MenuItem (Abstract)                                          │
+          │  • FoodItem                                                     │
+          │  • DrinkItem                                                    │
+          │  • DessertItem                                                  │
+          │  • Category                                                     │
+          └─────────────────────────────────────────────────────────────────┘
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                      cafeteria.order                            │
+          │  • Order                                                        │
+          │  • OrderItem                                                    │
+          │  • Payment                                                      │
+          └─────────────────────────────────────────────────────────────────┘
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                    cafeteria.database                           │
+          │  • DatabaseManager (Singleton)                                  │
+          └─────────────────────────────────────────────────────────────────┘
+
+          ┌─────────────────────────────────────────────────────────────────┐
+          │                     cafeteria.utils                             │
+          │  • PriceFormatter                                               │
+          │  • ValidationHelper                                             │
+          │  • ReceiptPrinter                                               │
+          │  • NotificationService                                          │
+          └─────────────────────────────────────────────────────────────────┘
+
+=================================================================================================================
+                                    COMPLETE CODE STRUCTURE
+=================================================================================================================
+
+cafeteria/
+│
+├── person/
+│   ├── Person.java (abstract)
+│   ├── Customer.java
+│   ├── Cashier.java
+│   └── Admin.java
+│
+├── menu/
+│   ├── MenuItem.java (abstract)
+│   ├── FoodItem.java
+│   ├── DrinkItem.java
+│   ├── DessertItem.java
+│   └── Category.java
+│
+├── order/
+│   ├── Order.java
+│   ├── OrderItem.java
+│   └── Payment.java
+│
+├── database/
+│   └── DatabaseManager.java
+│
+├── utils/
+│   ├── PriceFormatter.java
+│   ├── ValidationHelper.java
+│   ├── ReceiptPrinter.java
+│   └── NotificationService.java
+│
+└── ui/
+    ├── MainFrame.java
+    ├── LoginDialog.java
+    ├── MenuPanel.java
+    ├── OrderPanel.java
+    ├── AdminPanel.java
+    └── ReportPanel.java
+
+
+
+
+
+
+      
+

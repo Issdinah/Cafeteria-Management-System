@@ -1,0 +1,210 @@
++----------------------+
+|     categories       |
++----------------------+
+| category_id (PK)     |
+| category_name        |
+| description          |
+| is_active            |
+| created_date         |
++----------------------+
+           |
+           | 1
+           |
+           | belongs to
+           |
+           | many
++----------------------+
+|       items          |
++----------------------+
+| item_id     (PK)     |
+| category_id (FK)     |
+| item_name            |
+| description          |
+| price               |
+| image_path          |
+| calories            |
+| preparation_time     |
+| is_available         |
+| rating              |
+| times_ordered       |
+| created_date         |
++----------------------+
+           |
+           | 1
+           |
+           | contains
+           |
+           | many
++----------------------+
+|     item_ingredients |
++----------------------+
+| ingredient_id (PK)   |
+| item_id      (FK)    |
+| ingredient_name      |
+| quantity             |
+| unit                 |
++----------------------+
+
+
++----------------------------------------------+
+|                persons                       |
++----------------------------------------------+
+| person_id    (PK)                            |
+| full_name                                    |
+| phone                                        |
+| email                                        |
+| person_type ('CUSTOMER', 'CASHIER', 'ADMIN') |  
+| registered_date                              |
++----------------------------------------------+
+
+
++----------------------+
+|      customers       |
++----------------------+
+| customer_id (PK)     |
+| person_id    (FK)    |
+| table_number         |
+| loyalty_points       |
+| total_spent          |
+| visit_count          |
+| last_visit_date      |
++----------------------+
+
+
++----------------------+
+|      cashiers        |
++----------------------+
+| cashier_id   (PK)    |
+| person_id    (FK)    |
+| shift               |
+| department          |
+| employee_code        |
+| hire_date           |
+| is_active           |
++----------------------+
+
+
++----------------------+
+|       admins         |
++----------------------+
+| admin_id     (PK)    |
+| person_id    (FK)    |
+| username            |
+| password            |
+| role                |
+| last_login          |
++----------------------+
+
+
++-------------------------------------------------------------------+
+|                       orders                                      |
++-------------------------------------------------------------------+
+| order_id     (PK)                                                 |
+| customer_id  (FK)                                                 |
+| cashier_id   (FK)                                                 |
+| order_date                                                        |
+| total_amount                                                      |
+| tax_amount                                                        |
+| discount_amount                                                   |
+| service_charge                                                    |
+| final_amount                                                      |
+| status -'PENDING', 'PREPARING', 'READY', 'COMPLETED', 'CANCELLED' |
+| special_instructions                                              |
++-------------------------------------------------------------------+
+           |
+           | 1
+           |
+           | contains
+           |
+           | many
++----------------------+
+|     order_items      |
++----------------------+
+| order_item_id (PK)   |
+| order_id     (FK)    |
+| item_id      (FK)    |
+| quantity             |
+| unit_price           |
+| subtotal             |
+| discount_per_item    |
+| special_instructions |
++----------------------+
+
+
++-----------------------------------------+
+|      payments                           |
++-----------------------------------------+
+| payment_id   (PK)                       |
+| order_id     (FK)                       |
+| payment_type -- 'CASH', 'CARD', 'MOBILE'|
+| amount                                  |
+| tip_amount                              |
+| payment_date                            |
+| transaction_id                          |
+| is_completed                            |
++-----------------------------------------+
+
+
++----------------------+
+|       reviews        |
++----------------------+
+| review_id    (PK)    |
+| customer_id  (FK)    |
+| item_id      (FK)    |
+| rating               |
+| comment              |
+| review_date          |
++----------------------+
+
+
++--------------------------------------------------------------------------+
+|     reservations                                                         |
++--------------------------------------------------------------------------+
+| reservation_id (PK)                                                      |
+| customer_id  (FK)                                                        |
+| reservation_date                                                         |
+| table_number                                                             |
+| number_of_guests                                                         |
+| status -- 'PENDING', 'CONFIRMED', 'CANCELLED', 'COMPLETED'               |
+| special_requests                                                         |
+| created_date                                                             |
++--------------------------------------------------------------------------+
+
+
++--------------------------------------+
+|      discounts                       |
++--------------------------------------+
+| discount_id  (PK)                    |
+| code                                 |
+| description                          |
+| discount_type-- 'PERCENTAGE', 'FIXED'|
+| discount_value                       |
+| valid_from                           |
+| valid_to                             |
+| minimum_order                        |
+| is_active                            |
++--------------------------------------+
+
+
++----------------------+
+|   order_discounts    |
++----------------------+
+| order_discount_id (PK) |
+| order_id      (FK)    |
+| discount_id    (FK)    |
+| applied_amount        |
++----------------------+
+
+
++--------------------------------------------------------+
+|     audit_logs                                         |
++--------------------------------------------------------+
+| log_id       (PK)                                      |
+| admin_id     (FK)                                      |
+| action_type -- 'ADD', 'UPDATE', 'DELETE'               |
+| table_name                                             |
+| record_id                                              |
+| old_value                                              |
+| new_value                                              |
+| action_date                                            |
++--------------------------------------------------------+

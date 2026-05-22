@@ -1,0 +1,50 @@
+                                      +----------------------+
+                                      |      MainFrame       |
+                                      +----------------------+
+                                      | JMenuBar             |
+                                      | Header Panel         |
+                                      | Tabbed Working Area  |
+                                      | Status Bar           |
+                                      +----------------------+
+                                                   |
+             __________________________________________________________________________________
+            |                  |                  |                   |                         |
+            |                  |                  |                   |                         |
+   +----------------+ +----------------+ +----------------+ +-------------------+ +-------------------+
+   |  MenuPanel     | |  OrderPanel    | | CustomerPanel  | |   PaymentPanel    | |   ReportPanel     |
+   +----------------+ +----------------+ +----------------+ +-------------------+ +-------------------+
+   | Category Tabs  | | Current Order  | | Customer Form  | | Payment Form      | | Sales Reports     |
+   | Item Buttons   | | Order Items    | | Loyalty Points | | Receipt Display   | | Popular Items     |
+   | Search Bar     | | Total Display  | | History Table  | | Print Button      | | Revenue Charts    |
+   | Cart Button    | | Checkout       | | Edit/Delete    | | Cash/Card Options | | Export to PDF     |
+   +----------------+ +----------------+ +----------------+ +-------------------+ +-------------------+
+            |                  |                  |                   |                         |
+            |                  |                  |                   |                         |
+            +-----------------------------------------------------------------------------------+
+                                                   |
+                                      +----------------------+
+                                      |  Event Handling      |
+                                      +----------------------+
+                                      | ActionListener       |
+                                      | Menu Events          |
+                                      | Button Events        |
+                                      | Table Selection      |
+                                      | Tab Change Events    |
+                                      +----------------------+
+                                                   |
+                                      +----------------------+
+                                      | CRUD Operations      |
+                                      +----------------------+
+                                      | Insert               |
+                                      | Display              |
+                                      | Update               |
+                                      | Delete               |
+                                      | Search               |
+                                      +----------------------+
+                                                   |
+                                      +----------------------+
+                                      |   Data Storage       |
+                                      +----------------------+
+                                      | DatabaseManager      |
+                                      | (SQLite / JDBC)      |
+                                      +----------------------+
